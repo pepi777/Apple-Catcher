@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>AppleCatcher</title>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="400" ></canvas>
+
+	<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+
+	<script>
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var width = canvas.width;
+		var height = canvas.height;
+		var score = 0;
+		var posY = 380;
+		var posX = width/2-35;
+
+		var Circle = function (x, y, radius, fillCircle) {
+			ctx.beginPath();
+			ctx.fillStyle = "red";
+			ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+			if (fillCircle) {
+				ctx.fill();
+			}else {
+				ctx.stroke();
+			}
+		};
+		function gameOver () {
+			ctx.font = "80px Courier";
+			ctx.textAlign = "left";
+			ctx.textBaseline = "top";
+			ctx.fillStyle =  "Black";
+			ctx.fillText("game over", 100, 150);
+			clearInterval(Interval);
+			ctx.fillText("game over", 100, 150);
+		};
+
+		function drawScore () {
+			ctx.font = "40px Courier";
+			ctx.textAlign = "left";
+			ctx.textBaseline = "top";
+			ctx.fillStyle =  "black";
+			ctx.fillText("score:" + score, 10, 0);
+			if (score<0) {
+				
+				gameOver();
+			}
+		};
+
+		var Apple = function () {
+			this.x = Math.floor(Math.random() * 600);
+			this.y = 0;
+			this.ySpeed = 13;
+		};
+
+		Apple.prototype.draw = function() {
+			Circle(this.x,  this.y, 7, true);
+		};
+
+		Apple.prototype.move = function () {
+			
+			this.y += this.ySpeed;
+		};
+
+		Apple.prototype.checkCollision = function () {
+			
+			if ( this.y >= 400) {
+				this.y = 0;
+				this.x = Math.floor(Math.random() * 600);
+				score--;
+
+			}
+
+		};
+
+		var basket = function () 
+		{
+			ctx.beginPath();
+			ctx.fillStyle = "brown";
+			ctx.fillRect(posX, posY, 70, 20);
+			ctx.fillStyle = "lightblue";
+			ctx.fillRect(posX+5, posY, 60, 7);
+
+			if (apple.y>=385 && Math.abs(posX+35-apple.x)<35) {
+				score++;
+				apple.y = 0;
+				apple.x = Math.floor(Math.random() * 600);
+			}
+			
+		};
+
+		canvas.addEventListener('mousemove', function(event) {
+		    var XxX = event.clientX;
+		  	var YyY = event.clientY;
+		
+		  		posX = XxX - 35 ;
+		  
+		});	
+
+		var apple = new Apple();
+
+		var Interval = setInterval(function () {
+			ctx.clearRect(0, 0, 600, 400);
+			ctx.fillStyle = "lightblue";
+			ctx.fillRect(0, 0, 600, 400);
+
+			basket();
+			apple.draw();
+			apple.move();
+			apple.checkCollision();
+			drawScore();
+			
+			ctx.strokeRect(0, 0, 600, 400);
+		}, 30);
+
+	</script>
+</body>
+</html>
